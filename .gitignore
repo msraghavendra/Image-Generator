@@ -1,0 +1,23 @@
+# Environment variables and API keys (CRITICAL)
+.env
+*.env
+.env.local
+
+# Python cache & virtual environments
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+env/
+venv/
+ENV/
+.venv/
+
+# Operating System Files
+.DS_Store
+Thumbs.db
+
+# IDE settings
+.vscode/
+.idea/

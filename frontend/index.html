@@ -1,0 +1,163 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>AI Image Generator — Create Images from Text</title>
+  <meta name="description" content="Transform your words into stunning AI-generated images in seconds. Powered by Google Imagen." />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+
+  <!-- ── Ambient orbs ─────────────────────────────────────────────── -->
+  <div class="orb orb-1" aria-hidden="true"></div>
+  <div class="orb orb-2" aria-hidden="true"></div>
+  <div class="orb orb-3" aria-hidden="true"></div>
+
+  <div class="page-wrapper">
+
+    <!-- ── Header ─────────────────────────────────────────────────── -->
+    <header class="site-header">
+      <div class="logo">
+        <span class="logo-icon" aria-hidden="true">✦</span>
+        <span class="logo-text">Imagin<em>AI</em></span>
+      </div>
+      <div class="header-badge">Powered by Google Imagen</div>
+    </header>
+
+    <!-- ── Hero ───────────────────────────────────────────────────── -->
+    <section class="hero">
+      <div class="hero-tag">🎨 AI Image Generator</div>
+      <h1 class="hero-title">
+        Turn Words Into<br />
+        <span class="gradient-text">Stunning Visuals</span>
+      </h1>
+      <p class="hero-subtitle">
+        Describe any image you can imagine and watch it come to life<br />
+        in seconds with the power of Google Imagen.
+      </p>
+    </section>
+
+    <!-- ── Main Card ───────────────────────────────────────────────── -->
+    <main class="main-card" id="generator">
+
+      <!-- Prompt input -->
+      <div class="input-section">
+        <label for="prompt-input" class="input-label">
+          <span class="label-icon">✍️</span> Your Prompt
+        </label>
+        <div class="textarea-wrapper">
+          <textarea
+            id="prompt-input"
+            class="prompt-textarea"
+            placeholder="A futuristic city at sunset with flying cars, neon lights reflecting on wet streets, cinematic atmosphere…"
+            rows="4"
+            maxlength="1000"
+            autocomplete="off"
+            spellcheck="true"
+          ></textarea>
+          <div class="char-counter"><span id="char-count">0</span> / 1000</div>
+        </div>
+      </div>
+
+      <!-- Controls row -->
+      <div class="controls-row">
+
+        <!-- Size -->
+        <div class="control-group" id="size-group">
+          <span class="control-label">📐 Size</span>
+          <div class="pill-selector" role="group" aria-label="Image size">
+            <button class="pill active" data-group="size" data-value="square" id="size-square">Square</button>
+            <button class="pill" data-group="size" data-value="portrait" id="size-portrait">Portrait</button>
+            <button class="pill" data-group="size" data-value="landscape" id="size-landscape">Landscape</button>
+          </div>
+        </div>
+
+        <!-- Style -->
+        <div class="control-group" id="style-group">
+          <span class="control-label">🎨 Style</span>
+          <div class="pill-selector" role="group" aria-label="Image style">
+            <button class="pill active" data-group="style" data-value="realistic" id="style-realistic">Realistic</button>
+            <button class="pill" data-group="style" data-value="cinematic" id="style-cinematic">Cinematic</button>
+            <button class="pill" data-group="style" data-value="anime" id="style-anime">Anime</button>
+            <button class="pill" data-group="style" data-value="3d" id="style-3d">3D</button>
+            <button class="pill" data-group="style" data-value="digital_art" id="style-digital">Digital Art</button>
+          </div>
+        </div>
+
+        <!-- Count -->
+        <div class="control-group" id="count-group">
+          <span class="control-label">🖼️ Count</span>
+          <div class="pill-selector" role="group" aria-label="Number of images">
+            <button class="pill active" data-group="count" data-value="1" id="count-1">1 Image</button>
+            <button class="pill" data-group="count" data-value="2" id="count-2">2 Images</button>
+          </div>
+        </div>
+
+      </div>
+
+      <!-- Generate button -->
+      <button class="btn-generate" id="btn-generate" onclick="generateImage()">
+        <span class="btn-icon" aria-hidden="true">✦</span>
+        <span class="btn-label">Generate Image</span>
+        <span class="btn-shine" aria-hidden="true"></span>
+      </button>
+
+      <!-- Error message -->
+      <div class="error-banner" id="error-banner" role="alert" aria-live="polite" style="display: none;" hidden>
+        <span class="error-icon" aria-hidden="true">⚠️</span>
+        <span id="error-text"></span>
+        <button class="error-close" onclick="clearError()" aria-label="Dismiss error">✕</button>
+      </div>
+
+      <!-- Loading state -->
+      <div class="loading-section" id="loading-section" hidden>
+        <div class="loading-card">
+          <div class="spinner-ring" aria-hidden="true"></div>
+          <div class="loading-text">
+            <p class="loading-title">Generating your image…</p>
+            <p class="loading-sub" id="loading-sub">This usually takes 10–20 seconds</p>
+          </div>
+        </div>
+        <div class="shimmer-preview" aria-hidden="true">
+          <div class="shimmer-block" id="shimmer-1"></div>
+          <div class="shimmer-block" id="shimmer-2" hidden></div>
+        </div>
+      </div>
+
+      <!-- Results -->
+      <div class="results-section" id="results-section" hidden>
+
+        <div class="results-header">
+          <h2 class="results-title">Your Generated Images</h2>
+          <div class="results-actions">
+            <button class="btn-secondary" id="btn-regenerate" onclick="regenerate()" title="Regenerate with same settings">
+              <span aria-hidden="true">↺</span> Regenerate
+            </button>
+            <button class="btn-secondary btn-clear" id="btn-clear" onclick="clearAll()" title="Clear everything">
+              <span aria-hidden="true">✕</span> Clear
+            </button>
+          </div>
+        </div>
+
+        <div class="image-grid" id="image-grid">
+          <!-- Images injected here -->
+        </div>
+
+      </div>
+
+    </main>
+
+    <!-- ── Footer ─────────────────────────────────────────────────── -->
+    <footer class="site-footer">
+      <p>Built with ✦ using Google Imagen API &nbsp;·&nbsp; Images are AI-generated</p>
+    </footer>
+
+  </div>
+
+  <script src="app.js"></script>
+</body>
+</html>
